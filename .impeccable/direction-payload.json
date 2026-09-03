@@ -1,0 +1,171 @@
+{
+  "title": "Mundo visual da Info Projekt",
+  "question": "A direção sorteada é a placa das 14 cidades do Vale. Fica com ela, pega uma alternativa, ou sorteia de novo.",
+  "options": [
+    {
+      "id": "assigned",
+      "label": "Placa das cidades",
+      "kicker": "THE ROLL",
+      "lineage": "Placas de cidade e quadros de horário de rodoviária do Vale do Jequitinhonha",
+      "thesis": "A home é o quadro das 14 cidades. Escolher a cidade é o ato. O plano aparece na placa acesa.",
+      "palette": ["#0B4F8A", "#E10600", "#F4F7FB", "#1A1D21", "#7EC8E3"],
+      "materials": ["esmalte de placa", "alumínio de rodoviária", "céu do Infozinho"],
+      "viewport": "Faixa das 14 cidades no primeiro viewport. Almenara acesa em vermelho. Planos da cidade abaixo. Infozinho ao lado da placa ativa. WhatsApp colado no plano.",
+      "risk": "Se a grade virar um mapa do Brasil ou um seletor tímido, vira o site antigo com tinta nova.",
+      "raised": [
+        { "from": "ponte de VU", "raise": "A fileira de cidades se lê de uma vez. A escolhida acende, as outras dimam juntas." },
+        { "from": "BBS ANSI", "raise": "Cidade é o único fork antes do plano. Sem menu de telecom competindo." },
+        { "from": "tensegridade", "raise": "As 14 cidades são uma rede do Vale, não 14 landings isoladas." },
+        { "from": "terminal de nave", "raise": "Selecionar a cidade é a única pergunta. A tela responde com aquela grade de planos." },
+        { "from": "léxico", "raise": "Cor saturada só dentro da placa ativa e do card de plano. O resto fica esmalte e carvão." }
+      ],
+      "comp": ".impeccable/mocks/decision/assigned.webp",
+      "wireframe": {
+        "cols": 12,
+        "rows": 10,
+        "regions": [
+          { "label": "nav + logo INFO", "x": 0, "y": 0, "w": 12, "h": 1 },
+          { "label": "14 cidades em fila", "x": 0, "y": 1, "w": 12, "h": 2, "accent": true },
+          { "label": "Infozinho + cidade acesa", "x": 0, "y": 3, "w": 5, "h": 4 },
+          { "label": "planos da cidade", "x": 5, "y": 3, "w": 7, "h": 4, "accent": true },
+          { "label": "WhatsApp do plano", "x": 5, "y": 7, "w": 7, "h": 1 },
+          { "label": "para sua empresa", "x": 0, "y": 8, "w": 12, "h": 2 }
+        ]
+      }
+    },
+    {
+      "id": "model-pick",
+      "label": "Tiles #InfoFibra",
+      "kicker": "IMPECCABLE’S PICK",
+      "lineage": "Feed do Instagram @vemprainfo_",
+      "thesis": "A home é o feed da marca: bloco vermelho, número de mega, Infozinho, botão de WhatsApp.",
+      "palette": ["#E10600", "#FFFFFF", "#1A1D21", "#2EA4DE", "#FFB703"],
+      "materials": ["tile de feed", "mascote recortado", "número de oferta"],
+      "viewport": "Um tile vermelho enorme. 700 MEGA em branco. Infozinho voando. CTA verde de WhatsApp. Cidade numa barra embaixo.",
+      "risk": "É o lugar mais familiar desta categoria de marca. Pode parecer um Instagram colado no site.",
+      "comp": ".impeccable/mocks/decision/model-pick.webp",
+      "wireframe": {
+        "cols": 12,
+        "rows": 10,
+        "regions": [
+          { "label": "nav", "x": 0, "y": 0, "w": 12, "h": 1 },
+          { "label": "tile vermelho + mega", "x": 0, "y": 1, "w": 7, "h": 6, "accent": true },
+          { "label": "Infozinho", "x": 7, "y": 1, "w": 5, "h": 6 },
+          { "label": "cidade + WhatsApp", "x": 0, "y": 7, "w": 12, "h": 1, "accent": true },
+          { "label": "casa / empresa", "x": 0, "y": 8, "w": 12, "h": 2 }
+        ]
+      }
+    },
+    {
+      "id": "challenger-glazier",
+      "label": "Muro de vidro",
+      "verdict": "competitive",
+      "lineage": "Parede de vidro de vidraçaria, um vidro uma frase",
+      "thesis": "Cada cidade é um vidro. O ativo enche de vermelho. Planos cabem num único painel.",
+      "palette": ["#111111", "#F7F4EE", "#0047AB", "#E10600", "#D4A017"],
+      "materials": ["ferragens pretas", "vidro semeado", "campo de cor"],
+      "viewport": "Grade de vidros. Um vidro cobalto/vermelho diz Almenara. Dentro, 1 Giga e o WhatsApp. Infozinho atrás do vidro, não na frente.",
+      "case": "Clareza alta: cidade = vidro. Identificação mais fraca para quem vive no Vale.",
+      "risk": "Pode parecer escritório de arquitetura, não provedor da praça.",
+      "comp": ".impeccable/mocks/decision/challenger-glazier.webp",
+      "hero": "https://impeccable.style/worlds/cards/craft-making-glazier-colorfield-partition-hero.webp",
+      "board": "https://impeccable.style/worlds/cards/craft-making-glazier-colorfield-partition.webp",
+      "wireframe": {
+        "cols": 12,
+        "rows": 10,
+        "regions": [
+          { "label": "mullion nav", "x": 0, "y": 0, "w": 12, "h": 1 },
+          { "label": "vidro cidade 1", "x": 0, "y": 1, "w": 3, "h": 4 },
+          { "label": "vidro cidade ativa", "x": 3, "y": 1, "w": 6, "h": 4, "accent": true },
+          { "label": "vidro cidade 3", "x": 9, "y": 1, "w": 3, "h": 4 },
+          { "label": "painel de planos", "x": 0, "y": 5, "w": 12, "h": 5 }
+        ]
+      }
+    },
+    {
+      "id": "challenger-vu",
+      "label": "Ponte de VU",
+      "verdict": "declined",
+      "lineage": "Ponte de VU de estúdio",
+      "palette": ["#EDE6D6", "#1A1A1A", "#C41E3A", "#5C4033"],
+      "materials": ["marfim de medidor", "agulha", "nogueira"],
+      "case": "Estúdio de gravação não é o Vale. Mega não é áudio.",
+      "kept": "A fileira inteira se lê de um relance.",
+      "hero": "https://impeccable.style/worlds/cards/signals-instruments-vu-meter-bridge-hero.webp",
+      "comp": ".impeccable/mocks/decision/challenger-vu.webp"
+    },
+    {
+      "id": "challenger-bbs",
+      "label": "BBS de madrugada",
+      "verdict": "declined",
+      "lineage": "BBS ANSI, uma linha telefônica",
+      "palette": ["#000000", "#00FFFF", "#FF00FF", "#FFFFFF"],
+      "materials": ["glifo CP437", "ciano no preto"],
+      "case": "Nostalgia de modem briga com Infozinho e com o vermelho da marca.",
+      "kept": "Cidade é o único fork. O resto espera.",
+      "hero": "https://impeccable.style/worlds/cards/medium-native-ansi-bbs-nightboard-hero.webp",
+      "comp": ".impeccable/mocks/decision/challenger-bbs.webp"
+    },
+    {
+      "id": "challenger-tensegrity",
+      "label": "Coluna em tensegridade",
+      "verdict": "declined",
+      "lineage": "Escultura de hastes e corda vermelha",
+      "palette": ["#D8D4CC", "#111111", "#E10600"],
+      "materials": ["haste de carbono", "corda vermelha"],
+      "case": "Galeria de escultura. Zero identificação local.",
+      "kept": "As cidades são uma rede, não cards soltos.",
+      "hero": "https://impeccable.style/worlds/cards/kinetic-sculpture-automata-tensegrity-breathing-column-hero.webp",
+      "comp": ".impeccable/mocks/decision/challenger-tensegrity.webp"
+    },
+    {
+      "id": "challenger-starship",
+      "label": "Terminal de nave",
+      "verdict": "declined",
+      "lineage": "CRT verde de nave usada",
+      "palette": ["#0A0F0A", "#39FF14", "#FFBF00", "#E8E0D0"],
+      "materials": ["fósforo verde", "pictograma de risco"],
+      "case": "Sci-fi esfria o mascote e o WhatsApp da praça.",
+      "kept": "Uma pergunta. A tela responde com aquela cidade.",
+      "hero": "https://impeccable.style/worlds/cards/pop-culture-shelf-industrial-starship-terminal-hero.webp",
+      "comp": ".impeccable/mocks/decision/challenger-starship.webp"
+    },
+    {
+      "id": "challenger-lexicon",
+      "label": "Léxico de ombro",
+      "verdict": "declined",
+      "lineage": "Página de léxico do século XIX",
+      "palette": ["#F3EAD8", "#1F1C18", "#A33327"],
+      "materials": ["creme", "gravura", "prancha colorida"],
+      "case": "Creme e serif é o default de modelo. Não é o Vale.",
+      "kept": "Cor saturada só dentro da placa, nunca lavada no fundo.",
+      "hero": "https://impeccable.style/worlds/cards/rw-lexicon-shoulder-and-plate-hero.webp",
+      "comp": ".impeccable/mocks/decision/challenger-lexicon.webp"
+    }
+  ],
+  "reroll": { "registers": ["safer", "bolder"] },
+  "buildPath": { "value": "code", "toggle": true },
+  "canon": true,
+  "canonCard": {
+    "label": "Padrão da categoria",
+    "thesis": "Hero de lifestyle, três cards de plano, WhatsApp flutuante, seletor de cidade no topo. Executado no nível Vero/Unifique.",
+    "palette": ["#FFFFFF", "#111827", "#E10600"],
+    "materials": ["card arredondado", "foto de família", "FAB WhatsApp"],
+    "viewport": "Nav, hero, três planos, casa vs empresa.",
+    "risk": "Fica indistinguível de qualquer regional bem feito. De propósito.",
+    "comp": ".impeccable/mocks/decision/canon.webp",
+    "wireframe": {
+      "cols": 12,
+      "rows": 10,
+      "regions": [
+        { "label": "nav", "x": 0, "y": 0, "w": 12, "h": 1 },
+        { "label": "hero + Infozinho", "x": 0, "y": 1, "w": 12, "h": 4 },
+        { "label": "plano 1", "x": 0, "y": 5, "w": 4, "h": 4, "accent": true },
+        { "label": "plano 2", "x": 4, "y": 5, "w": 4, "h": 4 },
+        { "label": "plano 3", "x": 8, "y": 5, "w": 4, "h": 4 },
+        { "label": "casa / empresa", "x": 0, "y": 9, "w": 12, "h": 1 }
+      ]
+    }
+  },
+  "steer": true
+}
