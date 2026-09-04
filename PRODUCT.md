@@ -18,7 +18,7 @@ Outros públicos no v1, sem virar o centro da home: empresa vê um bloco "Para s
 
 ## Product Purpose
 
-O site vende internet fibra da Info Projekt nas cidades em que ela opera. Sucesso é a pessoa escolher cidade e plano e abrir o WhatsApp da sede com cidade e plano já na mensagem.
+O site vende internet fibra da Info Projekt nas cidades em que ela opera. Sucesso é a pessoa escolher cidade e plano e abrir o WhatsApp da sede `(33) 3721-1726` (`wa.me/553337211726`) com cidade e plano já na mensagem.
 
 O site também explica a empresa, mostra cobertura e aponta suporte. Não substitui o SGP nem o app de TV.
 
@@ -34,7 +34,7 @@ A pessoa chega pelo celular, muitas vezes pelo Instagram `@vemprainfo_` ou pelo 
 
 v1: Home, Sobre, Cobertura, Suporte.
 
-Home inclui seletor de cidade, planos com preço real daquela cidade, CTA de WhatsApp com cidade e plano na mensagem, bloco para empresa, atalho de área do cliente. Infozinho está pausado na home.
+Home v3: utility bar, hero benefit + oferta, dual CTA (Assinar WhatsApp | Ver cidades), quick-actions, planos speed-first com highlight leve no 700, cobertura em lista de cidades (sem CEP), benefícios, SVA/apps, lojas, float WhatsApp. Infozinho está pausado na home.
 
 Info TV Plus entra em todo plano fibra. Looke, ExitLag, Kaspersky e Estuda+ entram só em 700 Mega e 1 Giga.
 
@@ -54,7 +54,9 @@ Nome visível: Info Projekt. Wordmark INFO, com i minúsculo e anel orbital no p
 
 Identidade visual de referência: Instagram [https://www.instagram.com/vemprainfo_/](https://www.instagram.com/vemprainfo_/). Bio e tom: "Seu provedor de internet", "Fibra óptica de alta velocidade", "Os melhores planos da região", "Vem ser #InfoFibra".
 
-Mundo visual escolhido: hero fotográfico limpo (pessoas com notebook ou tablet via Unsplash), overlay de fibra/LED no vermelho da marca, resto da página em papel claro. Infozinho não entra nesta versão.
+Cores oficiais (feed + wordmark, pedido do cliente): vermelho `#EE1C25`, branco `#FFFFFF`, preto `#000000`, verde `#1B9E5A`. Sem degradê. Sem ciano na UI.
+
+Mundo visual escolhido (v3): flat ISP — preto no hero, branco no corpo, vermelho de ação, verde nos checks e WhatsApp. Planos com type pesado. Infozinho não entra nesta versão.
 
 Anti-referência: o site atual [https://ipw.com.br/](https://ipw.com.br/). Não copiar o visual, a grade de cards idênticos, o HTML com todas as cidades no DOM, nem o clipart Memphis. Manter fatos (cidades, preços, WhatsApp, lojas, SGP, TV).
 

@@ -61,6 +61,31 @@ export function planRequestMessage(
   return `Quero ${plan.speedLabel} em ${city}.`;
 }
 
+/** WhatsApp da sede em Almenara — único número de contratação. */
+export const WHATSAPP_E164 = "553337211726";
+
+export const WHATSAPP_DISPLAY = "(33) 3721-1726";
+
+export const INSTAGRAM_URL = "https://www.instagram.com/vemprainfo_/";
+
+export const SPEED_TEST_URL = "https://fast.com/pt/";
+
+export function whatsappHref(
+  city?: City,
+  plan?: Plan,
+  forBusiness = false,
+): string {
+  const params = new URLSearchParams();
+  if (city && plan) {
+    params.set("text", planRequestMessage(city, plan, forBusiness));
+  } else if (city) {
+    params.set("text", `Quero fibra da Info em ${city}.`);
+  } else {
+    params.set("text", "Quero fibra da Info Projekt.");
+  }
+  return `https://wa.me/${WHATSAPP_E164}?${params.toString()}`;
+}
+
 export const STORES: Store[] = [
   {
     city: "Almenara",
@@ -98,18 +123,15 @@ export function cityChipList(
 }
 
 export function storeMapSrc(store: Store): string {
-  const pad = 0.0055;
+  const query = `${store.address}, ${store.city}, MG`;
   const params = new URLSearchParams({
-    bbox: [
-      store.lon - pad,
-      store.lat - pad,
-      store.lon + pad,
-      store.lat + pad,
-    ].join(","),
-    layer: "mapnik",
-    marker: `${store.lat},${store.lon}`,
+    q: query,
+    ll: `${store.lat},${store.lon}`,
+    z: "16",
+    hl: "pt-BR",
+    output: "embed",
   });
-  return `https://www.openstreetmap.org/export/embed.html?${params.toString()}`;
+  return `https://www.google.com/maps?${params.toString()}`;
 }
 
 export function storeMapsHref(store: Store): string {

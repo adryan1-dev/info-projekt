@@ -16,13 +16,13 @@ export function FiberOverlay() {
     >
       <defs>
         <linearGradient id={glow} x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#e10600" stopOpacity="0" />
-          <stop offset="42%" stopColor="#ff4d3a" stopOpacity="0.95" />
-          <stop offset="100%" stopColor="#e10600" stopOpacity="0" />
+          <stop offset="0%" stopColor="#ee1c25" stopOpacity="0" />
+          <stop offset="42%" stopColor="#ff4d55" stopOpacity="0.95" />
+          <stop offset="100%" stopColor="#ee1c25" stopOpacity="0" />
         </linearGradient>
         <linearGradient id={core} x1="0%" y1="0%" x2="100%" y2="0%">
           <stop offset="0%" stopColor="#ffffff" stopOpacity="0" />
-          <stop offset="50%" stopColor="#fff5f3" stopOpacity="0.9" />
+          <stop offset="50%" stopColor="#fff5f5" stopOpacity="0.9" />
           <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
         </linearGradient>
       </defs>

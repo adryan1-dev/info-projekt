@@ -11,8 +11,8 @@ export default function OpenGraphImage() {
         style={{
           width: "100%",
           height: "100%",
-          background: "#12100e",
-          color: "#f7f4f2",
+          background: "#000000",
+          color: "#ffffff",
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
@@ -23,7 +23,7 @@ export default function OpenGraphImage() {
           style={{
             width: 72,
             height: 8,
-            background: "#e10600",
+            background: "#ee1c25",
             borderRadius: 4,
           }}
         />
@@ -31,7 +31,7 @@ export default function OpenGraphImage() {
           <div style={{ fontSize: 72, letterSpacing: -2, lineHeight: 1 }}>
             Info Projekt
           </div>
-          <div style={{ fontSize: 32, color: "#c4b8ae", letterSpacing: -0.4 }}>
+          <div style={{ fontSize: 32, color: "#a3a3a3", letterSpacing: -0.4 }}>
             Fibra no Vale do Jequitinhonha
           </div>
         </div>

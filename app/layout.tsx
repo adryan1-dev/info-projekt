@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { Manrope } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import "./globals.css";
 
-const manrope = Manrope({
+const montserrat = Montserrat({
   subsets: ["latin"],
-  variable: "--font-manrope",
+  variable: "--font-montserrat",
   display: "swap",
+  weight: ["500", "600", "700", "800", "900"],
 });
 
 export const metadata: Metadata = {
@@ -26,14 +27,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" className={manrope.variable}>
+    <html lang="pt-BR" className={montserrat.variable}>
       <body>
         {/*
-          THESIS: A home é uma vitrine de quatro planos no mesmo peso. Recusa o cartão 700 em destaque e o hero de lifestyle.
-          OWN-WORLD: Barra noite #12100e, piso calcário #e7e6e2, placas #fafafa, tinta #161412. Vermelho #e10600 só na cidade, no chip pressionado e no Assinar. Manrope 800 nas velocidades. Fita em pílula.
-          STORY: Confirma a cidade, compara mega e preço lado a lado, toca Assinar no plano escolhido. O preço é da cidade; as lojas existem.
-          FIRST VIEWPORT: Barra noite. Palco claro. H1 Planos em {cidade} com a cidade em vermelho. Fita. Quatro placas iguais (100 / 300 / 700 / 1 Giga), extras comparáveis e o mesmo Assinar em cada uma.
-          FORM: Vitrine GFiber×Claro, pedido v2.0. Assinatura: quatro velocidades no mesmo peso; trocar a cidade vinca os quatro preços.
+          THESIS: Home ISP de conversão: hero benefit + oferta da cidade, dual CTA, quick-actions e planos speed-first. Recusa CEP inventado e depoimento fake.
+          OWN-WORLD: Flat. Preto #000, branco #FFF, vermelho #EE1C25, verde #1B9E5A. Sem degradê. Tipografia Instagram: Montserrat Black nos megas e títulos. Entrada rise-in + hover lift.
+          STORY: Confirma a cidade, vê 700 Mega e o preço, toca Assinar e abre WhatsApp com cidade e plano. Lojas e cobertura em lista.
+          FIRST VIEWPORT: Utility. Header. Hero split (copy + foto). Oferta 700 Mega. Assinar | Ver cidades. Fita de cidades. Quick-actions sob o hero.
+          FORM: DIRECTION ISP Behance adaptado à Info (v3). Assinatura: dual CTA + wa.me; cidade no lugar de CEP; tipografia alinhada a @vemprainfo_.
           FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
         */}
         {children}
