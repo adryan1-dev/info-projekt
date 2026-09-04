@@ -1,21 +1,32 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useId, useRef, useState } from "react";
-import { FiberOverlay } from "@/components/FiberOverlay";
 import {
-  BUNDLE_LABELS,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type KeyboardEvent as ReactKeyboardEvent,
+} from "react";
+import { PlanApps } from "@/components/PlanApps";
+import {
   CITIES,
   DEFAULT_CITY,
   PLANS,
   SGP_URL,
   STORES,
-  TV_LABEL,
+  cityChipList,
+  featuredPlan,
   formatPrice,
+  planRequestMessage,
+  storeMapSrc,
+  storeMapsHref,
+  storePhoneHref,
   type City,
   type Plan,
+  type Store,
 } from "@/lib/catalog";
-import { HERO_MEDIA, HERO_PRIMARY } from "@/lib/hero-media";
+import { HERO_MEDIA } from "@/lib/hero-media";
 
 type Receipt = {
   city: City;
@@ -23,26 +34,83 @@ type Receipt = {
   forBusiness: boolean;
 };
 
-function requestCopy(receipt: Receipt) {
-  const who = receipt.forBusiness ? "empresarial do plano" : "do plano";
-  return `Pedido ${who} ${receipt.plan.speedLabel} em ${receipt.city} registrado. Na produção isso segue para o WhatsApp da sede.`;
-}
+const NAV_SECTIONS = ["planos", "empresa", "lojas"] as const;
+type NavSection = (typeof NAV_SECTIONS)[number];
 
 export function Home() {
   const [city, setCity] = useState<City>(DEFAULT_CITY);
-  const [planIndex, setPlanIndex] = useState(0);
+  const [showAllCities, setShowAllCities] = useState(false);
+  const [selectedStore, setSelectedStore] = useState<Store>(STORES[0]);
+  const [activeSection, setActiveSection] = useState<NavSection>("planos");
   const [receipt, setReceipt] = useState<Receipt | null>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const storeListRef = useRef<HTMLDivElement>(null);
   const chipsId = useId();
-  const plan = PLANS[planIndex];
+  const businessPlan = featuredPlan();
+  const visibleCities = cityChipList(city, showAllCities);
 
   useEffect(() => {
     if (!receipt) return;
     closeRef.current?.focus();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setReceipt(null);
+    };
+    document.addEventListener("keydown", onKey);
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = previousOverflow;
+    };
   }, [receipt]);
+
+  useEffect(() => {
+    const observed = NAV_SECTIONS.map((id) => document.getElementById(id)).filter(
+      (node): node is HTMLElement => node !== null,
+    );
+    if (observed.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+        const id = visible[0]?.target.id;
+        if (id === "planos" || id === "empresa" || id === "lojas") {
+          setActiveSection(id);
+        }
+      },
+      { rootMargin: "-28% 0px -55% 0px", threshold: [0, 0.25, 0.5, 1] },
+    );
+
+    observed.forEach((node) => observer.observe(node));
+    return () => observer.disconnect();
+  }, []);
 
   function onRequest(nextCity: City, nextPlan: Plan, forBusiness = false) {
     setReceipt({ city: nextCity, plan: nextPlan, forBusiness });
+  }
+
+  function onSelectStore(store: Store) {
+    setSelectedStore(store);
+    setCity(store.city);
+  }
+
+  function onPickCity(name: City) {
+    setCity(name);
+  }
+
+  function onStoreListKeyDown(event: ReactKeyboardEvent<HTMLDivElement>) {
+    if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+    event.preventDefault();
+    const index = STORES.findIndex((store) => store.city === selectedStore.city);
+    const offset = event.key === "ArrowDown" ? 1 : -1;
+    const next = STORES[(index + offset + STORES.length) % STORES.length];
+    onSelectStore(next);
+    const buttons = storeListRef.current?.querySelectorAll<HTMLButtonElement>(
+      "[role='radio']",
+    );
+    buttons?.[STORES.indexOf(next)]?.focus();
   }
 
   return (
@@ -50,225 +118,266 @@ export function Home() {
       <a className="skip" href="#planos">
         Ir para os planos
       </a>
-      <div className="mast">
-        <header className="topbar">
-          <a className="brand" href="#topo">
+      <header className="topbar">
+        <div className="rail topbar-inner">
+          <a className="brand" href="#planos" aria-label="Info Projekt">
             <Image
               src="/brand/logo-white.png"
-              alt=""
-              width={132}
-              height={28}
-              style={{ width: "auto", height: 28 }}
+              alt="Info Projekt"
+              width={320}
+              height={151}
               priority
             />
-            <span className="brand-name">Info Projekt</span>
           </a>
-          <nav className="nav" aria-label="Seções">
-            <a href="#planos">Planos</a>
-            <a href="#empresa">Empresa</a>
-            <a href="#lojas">Lojas</a>
+          <nav className="nav" aria-label="Menu">
+            <a
+              href="#planos"
+              aria-current={activeSection === "planos" ? "true" : undefined}
+            >
+              Planos
+            </a>
+            <a
+              href="#empresa"
+              aria-current={activeSection === "empresa" ? "true" : undefined}
+            >
+              Empresa
+            </a>
+            <a
+              href="#lojas"
+              aria-current={activeSection === "lojas" ? "true" : undefined}
+            >
+              Lojas
+            </a>
           </nav>
           <div className="top-actions">
             <a className="ghost" href={SGP_URL} rel="noopener noreferrer">
               Área do cliente
             </a>
-            <a className="ask" href="#planos">
-              Pedir plano
-            </a>
           </div>
-        </header>
+        </div>
+      </header>
 
-        <section className="hero" id="topo" aria-labelledby="hero-title">
-          <div className="hero-media">
-            <Image
-              src={HERO_PRIMARY.src}
-              alt={HERO_PRIMARY.alt}
-              fill
-              sizes="100vw"
-              priority
-              style={{ objectFit: "cover", objectPosition: "50% 28%" }}
-            />
-          </div>
-          <div className="hero-shade" />
-          <FiberOverlay />
-          <div className="hero-copy">
-            <h1 id="hero-title">{plan.speedLabel}</h1>
-            <p className="place">em {city}</p>
+      <section className="hero" id="planos" aria-labelledby="hero-title">
+        <div className="hero-stage rail">
+          <div className="hero-intro">
+            <h1 id="hero-title">
+              Planos em{" "}
+              <span key={city} className="city-swap">
+                {city}
+              </span>
+            </h1>
             <p className="sub">
-              Fibra no Vale do Jequitinhonha. Você escolhe a cidade e o plano.
-              O pedido fecha aqui.
+              Fibra com TV em todo plano. Looke, ExitLag, Kaspersky e Estuda+
+              entram no 700 Mega e no 1 Giga.
             </p>
-            <button
-              className="ask"
-              type="button"
-              onClick={() => onRequest(city, plan)}
-            >
-              Pedir {plan.speedLabel} em {city}
-            </button>
           </div>
-          <p className="hero-credit">
-            Foto{" "}
-            <a href={HERO_PRIMARY.creditUrl} rel="noopener noreferrer">
-              {HERO_PRIMARY.credit}
-            </a>
-            , Unsplash
-          </p>
-        </section>
-      </div>
 
-      <main className="page">
-        <section className="band" id="cobertura" aria-labelledby="city-heading">
-          <h2 id="city-heading">Onde a Info chega</h2>
-          <p className="lead">
-            Quatorze cidades. O preço nesta tela é o de Almenara. Trocar o
-            município muda o nome no pedido.
-          </p>
           <div
-            className="chips"
+            className={showAllCities ? "tape is-open" : "tape"}
             role="group"
-            aria-labelledby="city-heading"
+            aria-label="Cidades da Info"
             id={chipsId}
           >
-            {CITIES.map((name) => (
+            {visibleCities.map((name) => (
               <button
                 key={name}
                 className="chip"
                 type="button"
                 aria-pressed={name === city}
-                onClick={() => setCity(name)}
+                aria-label={`Planos em ${name}`}
+                onClick={() => onPickCity(name)}
               >
                 {name}
               </button>
             ))}
+            <button
+              className="chip chip-more"
+              type="button"
+              aria-expanded={showAllCities}
+              onClick={() => setShowAllCities((open) => !open)}
+            >
+              {showAllCities ? "Menos cidades" : "Ver todas"}
+            </button>
           </div>
-        </section>
 
-        <section className="band" id="planos" aria-labelledby="plans-heading">
-          <h2 id="plans-heading">Planos em {city}</h2>
-          <p className="lead">
-            TV entra em todos. {BUNDLE_LABELS.join(", ")} só nos dois mais
-            altos.
-          </p>
-          <div className="plans">
-            {PLANS.map((item, index) => {
-              const selected = index === planIndex;
-              const tags = item.includesBundles
-                ? [TV_LABEL, ...BUNDLE_LABELS]
-                : [TV_LABEL];
-              return (
-                <article
-                  key={item.speedLabel}
-                  className={selected ? "plan is-on" : "plan"}
+          <div className="deck" aria-label="Planos de fibra">
+            {PLANS.map((item) => (
+              <article key={item.speedLabel} className="plan">
+                <p className="speed">{item.speedLabel}</p>
+                <p key={`${city}-${item.speedLabel}`} className="price">
+                  <span className="price-value">
+                    {formatPrice(item.priceMonthly)}
+                  </span>
+                  <span className="price-period">/mês</span>
+                </p>
+                <PlanApps plan={item} compare />
+                <button
+                  className="ask"
+                  type="button"
+                  onClick={() => onRequest(city, item)}
                 >
-                  <button
-                    className="plan-pick"
-                    type="button"
-                    aria-pressed={selected}
-                    onClick={() => setPlanIndex(index)}
-                  >
-                    <span className="speed">{item.speedLabel}</span>
-                    <span className="price">
-                      {formatPrice(item.priceMonthly)}/mês
-                    </span>
-                    <div className="tags">
-                      {tags.map((tag) => (
-                        <span key={tag}>{tag}</span>
-                      ))}
-                    </div>
-                  </button>
-                  <button
-                    className="ask"
-                    type="button"
-                    onClick={() => onRequest(city, item)}
-                  >
-                    Pedir este plano
-                  </button>
-                </article>
-              );
-            })}
+                  Assinar {item.speedLabel}
+                </button>
+              </article>
+            ))}
           </div>
+        </div>
+      </section>
+
+      <main className="page">
+        <section
+          className="band rail"
+          id="cobertura"
+          aria-labelledby="city-heading"
+        >
+          <h2 id="city-heading">Onde a Info chega</h2>
+          <p className="lead">
+            Se a sua cidade está aqui, dá para pedir. Toque para ver o plano.
+          </p>
+          <ul className="places">
+            {CITIES.map((name) => (
+              <li key={name}>
+                <a
+                  className={name === city ? "place is-on" : "place"}
+                  href="#planos"
+                  onClick={() => onPickCity(name)}
+                >
+                  {name}
+                </a>
+              </li>
+            ))}
+          </ul>
         </section>
 
-        <aside className="biz" id="empresa">
+        <aside className="biz rail" id="empresa">
           <div className="biz-media">
             <Image
               src={HERO_MEDIA.notebook.src}
               alt={HERO_MEDIA.notebook.alt}
               fill
               sizes="(max-width: 759px) 100vw, 42vw"
-              style={{ objectFit: "cover", objectPosition: "center 40%" }}
             />
           </div>
           <div className="biz-copy">
             <h2>Para sua empresa</h2>
-            <p>
-              Ponto de venda, escritório, caixa. O pedido comercial usa a
-              cidade que você marcou acima.
-            </p>
+            <p>A mesma fibra da casa, no ponto de venda em {city}.</p>
             <button
-              className="ask"
+              className="ask ask-quiet"
               type="button"
-              onClick={() => onRequest(city, plan, true)}
+              onClick={() => onRequest(city, businessPlan, true)}
             >
-              Pedir para empresa em {city}
+              Pedir para empresa
             </button>
           </div>
         </aside>
 
-        <section className="band" id="lojas" aria-labelledby="stores-heading">
+        <section className="band rail" id="lojas" aria-labelledby="stores-heading">
           <h2 id="stores-heading">Três lojas no Vale</h2>
-          <p className="lead">
-            Telefone na vitrine, sem ligação por este site. Pedido de plano
-            continua no fluxo de cima.
-          </p>
-          <div className="stores">
-            {STORES.map((store) => (
-              <article className="store" key={store.city}>
-                <h3>{store.city}</h3>
-                <p className="phone">{store.phone}</p>
-                <p>{store.address}</p>
-              </article>
-            ))}
+          <p className="lead">Pode ir lá ou ligar.</p>
+          <div className="stores-layout">
+            <div
+              ref={storeListRef}
+              className="store-list"
+              role="radiogroup"
+              aria-label="Lojas no Vale"
+              onKeyDown={onStoreListKeyDown}
+            >
+              {STORES.map((store) => {
+                const selected = store.city === selectedStore.city;
+                return (
+                  <article
+                    className={selected ? "store is-active" : "store"}
+                    key={store.city}
+                  >
+                    <button
+                      type="button"
+                      className="store-pick"
+                      role="radio"
+                      aria-checked={selected}
+                      tabIndex={selected ? 0 : -1}
+                      onClick={() => onSelectStore(store)}
+                    >
+                      <span className="store-city">{store.city}</span>
+                      <span className="store-address">{store.address}</span>
+                    </button>
+                    <a className="phone" href={storePhoneHref(store.phone)}>
+                      {store.phone}
+                    </a>
+                  </article>
+                );
+              })}
+            </div>
+            <div
+              className="store-map"
+              role="region"
+              aria-live="polite"
+              aria-label={`Mapa da loja em ${selectedStore.city}`}
+            >
+              <iframe
+                key={selectedStore.city}
+                title={`Mapa da loja em ${selectedStore.city}`}
+                src={storeMapSrc(selectedStore)}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+              <a
+                className="map-link"
+                href={storeMapsHref(selectedStore)}
+                rel="noopener noreferrer"
+              >
+                Abrir {selectedStore.city} no Google Maps
+              </a>
+            </div>
           </div>
         </section>
       </main>
 
-      <footer className="foot">
+      <footer className="foot rail">
         <strong>Info Projekt</strong>
         <p>
-          Provedor do Vale do Jequitinhonha. Sede em Almenara. CNPJ
-          02.410.966/0001-22.
+          Fibra no Vale do Jequitinhonha. Sede em Almenara.{" "}
+          <span className="cnpj">CNPJ 02.410.966/0001-22</span>.
         </p>
         <p>
-          Área do cliente no{" "}
+          Já é cliente? Entra na{" "}
           <a href={SGP_URL} rel="noopener noreferrer">
-            SGP
+            área do cliente
           </a>
-          .
+          . <a href="/privacidade">Privacidade</a>.
         </p>
       </footer>
 
       {receipt ? (
         <div
           className="success"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="ok-title"
-          aria-describedby="ok-copy"
+          role="presentation"
+          onClick={() => setReceipt(null)}
         >
-          <div className="success-card">
-            <span className="stamp">Pedido registrado</span>
+          <div
+            className="success-card"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="ok-title"
+            aria-describedby="ok-copy"
+            onClick={(event) => event.stopPropagation()}
+          >
             <h2 id="ok-title">
               {receipt.plan.speedLabel} em {receipt.city}
             </h2>
-            <p id="ok-copy">{requestCopy(receipt)}</p>
+            <p id="ok-copy">
+              {planRequestMessage(
+                receipt.city,
+                receipt.plan,
+                receipt.forBusiness,
+              )}
+            </p>
             <button
               ref={closeRef}
               className="ask"
               type="button"
               onClick={() => setReceipt(null)}
             >
-              Pedir outro plano
+              Escolher outro
             </button>
           </div>
         </div>
