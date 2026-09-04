@@ -17,16 +17,17 @@ import {
   SGP_URL,
   SPEED_TEST_URL,
   STORES,
-  WHATSAPP_DISPLAY,
   cityChipList,
   featuredPlan,
   formatPrice,
   isFeaturedPlan,
+  planRequestMessage,
   storeMapSrc,
   storeMapsHref,
   storePhoneHref,
   whatsappHref,
   type City,
+  type Plan,
   type Store,
 } from "@/lib/catalog";
 import { HERO_MEDIA } from "@/lib/hero-media";
@@ -34,17 +35,25 @@ import { HERO_MEDIA } from "@/lib/hero-media";
 const NAV_SECTIONS = ["planos", "cobertura", "empresa", "lojas"] as const;
 type NavSection = (typeof NAV_SECTIONS)[number];
 
+type WaIntent = {
+  city: City;
+  plan?: Plan;
+  forBusiness?: boolean;
+  label: string;
+};
+
 export function Home() {
   const [city, setCity] = useState<City>(DEFAULT_CITY);
   const [showAllCities, setShowAllCities] = useState(false);
   const [selectedStore, setSelectedStore] = useState<Store>(STORES[0]);
   const [activeSection, setActiveSection] = useState<NavSection>("planos");
+  const [waIntent, setWaIntent] = useState<WaIntent | null>(null);
   const storeListRef = useRef<HTMLDivElement>(null);
   const chipsId = useId();
+  const waTitleId = useId();
+  const waConfirmRef = useRef<HTMLButtonElement>(null);
   const offer = featuredPlan();
   const visibleCities = cityChipList(city, showAllCities);
-  const heroWa = whatsappHref(city, offer);
-  const floatWa = whatsappHref(city);
 
   useEffect(() => {
     const observed = NAV_SECTIONS.map((id) => document.getElementById(id)).filter(
@@ -135,6 +144,40 @@ export function Home() {
     setCity(name);
   }
 
+  function openWaConfirm(intent: WaIntent) {
+    setWaIntent(intent);
+  }
+
+  function closeWaConfirm() {
+    setWaIntent(null);
+  }
+
+  function confirmWhatsApp() {
+    if (!waIntent) return;
+    const href = whatsappHref(
+      waIntent.city,
+      waIntent.plan,
+      waIntent.forBusiness,
+    );
+    window.open(href, "_blank", "noopener,noreferrer");
+    setWaIntent(null);
+  }
+
+  useEffect(() => {
+    if (!waIntent) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") closeWaConfirm();
+    };
+    document.addEventListener("keydown", onKey);
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    waConfirmRef.current?.focus();
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = previous;
+    };
+  }, [waIntent]);
+
   function onStoreListKeyDown(event: ReactKeyboardEvent<HTMLDivElement>) {
     if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
     event.preventDefault();
@@ -157,9 +200,6 @@ export function Home() {
 
       <div className="utility">
         <div className="rail utility-inner">
-          <a className="utility-link" href={storePhoneHref(WHATSAPP_DISPLAY)}>
-            {WHATSAPP_DISPLAY}
-          </a>
           <a
             className="utility-link"
             href={SGP_URL}
@@ -218,13 +258,19 @@ export function Home() {
             <a className="ghost" href={SGP_URL} rel="noopener noreferrer">
               Central
             </a>
-            <a
+            <button
+              type="button"
               className="ask ask-wa"
-              href={heroWa}
-              rel="noopener noreferrer"
+              onClick={() =>
+                openWaConfirm({
+                  city,
+                  plan: offer,
+                  label: `Assinar ${offer.speedLabel}`,
+                })
+              }
             >
               WhatsApp
-            </a>
+            </button>
           </div>
         </div>
       </header>
@@ -267,13 +313,19 @@ export function Home() {
             </div>
 
             <div className="hero-ctas">
-              <a
+              <button
+                type="button"
                 className="ask"
-                href={heroWa}
-                rel="noopener noreferrer"
+                onClick={() =>
+                  openWaConfirm({
+                    city,
+                    plan: offer,
+                    label: `Assinar ${offer.speedLabel}`,
+                  })
+                }
               >
                 Assinar {offer.speedLabel}
-              </a>
+              </button>
               <a className="ask ask-quiet" href="#cobertura">
                 Ver cidades
               </a>
@@ -344,10 +396,15 @@ export function Home() {
           </span>
           <span className="quick-label">2ª via / Central</span>
         </a>
-        <a
+        <button
+          type="button"
           className="quick-card"
-          href={whatsappHref(city)}
-          rel="noopener noreferrer"
+          onClick={() =>
+            openWaConfirm({
+              city,
+              label: "Suporte no WhatsApp",
+            })
+          }
         >
           <span className="quick-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
@@ -358,7 +415,7 @@ export function Home() {
             </svg>
           </span>
           <span className="quick-label">Suporte</span>
-        </a>
+        </button>
         <a
           className="quick-card"
           href={SPEED_TEST_URL}
@@ -384,8 +441,8 @@ export function Home() {
             Planos em {city}
           </h2>
           <p className="lead" data-reveal="up">
-            Quatro velocidades. Toque Assinar e o WhatsApp abre com a cidade e o
-            plano na mensagem.
+            Quatro velocidades. Toque Assinar, confirme e o WhatsApp abre com a
+            cidade e o plano na mensagem.
           </p>
 
           <div className="deck" aria-label="Planos de fibra">
@@ -417,13 +474,19 @@ export function Home() {
                     )}
                   </ul>
                   <PlanApps plan={item} compare />
-                  <a
+                  <button
+                    type="button"
                     className={featured ? "ask" : "ask ask-quiet"}
-                    href={whatsappHref(city, item)}
-                    rel="noopener noreferrer"
+                    onClick={() =>
+                      openWaConfirm({
+                        city,
+                        plan: item,
+                        label: `Assinar ${item.speedLabel}`,
+                      })
+                    }
                   >
                     Assinar {item.speedLabel}
-                  </a>
+                  </button>
                 </article>
               );
             })}
@@ -509,13 +572,19 @@ export function Home() {
               Info TV Plus entra em todo plano fibra. Looke, ExitLag, Kaspersky e
               Estuda+ entram no 700 Mega e no 1 Giga.
             </p>
-            <a
+            <button
+              type="button"
               className="ask"
-              href={whatsappHref(city, offer)}
-              rel="noopener noreferrer"
+              onClick={() =>
+                openWaConfirm({
+                  city,
+                  plan: offer,
+                  label: `Pedir ${offer.speedLabel}`,
+                })
+              }
             >
               Pedir {offer.speedLabel}
-            </a>
+            </button>
           </div>
           <div className="sva-media">
             <Image
@@ -539,13 +608,20 @@ export function Home() {
           <div className="biz-copy">
             <h2>Para sua empresa</h2>
             <p>A mesma fibra da casa, no ponto de venda em {city}.</p>
-            <a
+            <button
+              type="button"
               className="ask ask-quiet"
-              href={whatsappHref(city, offer, true)}
-              rel="noopener noreferrer"
+              onClick={() =>
+                openWaConfirm({
+                  city,
+                  plan: offer,
+                  forBusiness: true,
+                  label: "Pedir para empresa",
+                })
+              }
             >
               Pedir para empresa
-            </a>
+            </button>
           </div>
         </aside>
 
@@ -632,24 +708,85 @@ export function Home() {
             <a href="/privacidade">Privacidade</a>
           </p>
           <p>
-            WhatsApp{" "}
-            <a href={floatWa} rel="noopener noreferrer">
-              {WHATSAPP_DISPLAY}
-            </a>
+            <button
+              type="button"
+              className="linkish"
+              onClick={() =>
+                openWaConfirm({
+                  city,
+                  label: "Falar no WhatsApp",
+                })
+              }
+            >
+              Falar no WhatsApp
+            </button>
           </p>
         </div>
       </footer>
 
-      <a
+      <button
+        type="button"
         className="wa-float"
-        href={floatWa}
-        rel="noopener noreferrer"
-        aria-label={`WhatsApp ${WHATSAPP_DISPLAY}`}
+        aria-label="Abrir confirmação do WhatsApp"
+        onClick={() =>
+          openWaConfirm({
+            city,
+            label: "Falar no WhatsApp",
+          })
+        }
       >
         <svg viewBox="0 0 32 32" aria-hidden="true" fill="currentColor">
           <path d="M16.04 4C9.5 4 4.2 9.2 4.2 15.6c0 2.05.54 4.05 1.56 5.82L4 28l6.78-1.74A12 12 0 0 0 16.04 27.2c6.54 0 11.84-5.2 11.84-11.6S22.58 4 16.04 4zm6.9 16.5c-.28.78-1.64 1.44-2.28 1.52-.58.08-1.32.11-2.12-.13-.49-.15-1.11-.36-1.91-.7-3.37-1.45-5.56-4.78-5.73-5-.17-.22-1.4-1.86-1.4-3.55s.88-2.52 1.2-2.86c.3-.33.66-.41.88-.41h.64c.2 0 .48-.08.74.56.28.68.94 2.3 1.02 2.46.08.17.14.36.03.58-.1.22-.16.36-.32.55-.16.2-.33.44-.47.59-.16.17-.33.35-.14.68.19.33.84 1.38 1.8 2.24 1.24 1.1 2.28 1.44 2.61 1.6.33.17.52.14.71-.08.2-.22.84-.98 1.06-1.32.22-.33.45-.28.76-.17.31.11 1.97.93 2.31 1.1.33.17.56.25.64.39.08.14.08.8-.2 1.58z" />
         </svg>
-      </a>
+      </button>
+
+      {waIntent ? (
+        <div
+          className="wa-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={waTitleId}
+        >
+          <button
+            type="button"
+            className="wa-modal-backdrop"
+            aria-label="Fechar"
+            onClick={closeWaConfirm}
+          />
+          <div className="wa-modal-card">
+            <h2 id={waTitleId}>Abrir WhatsApp?</h2>
+            <p className="wa-modal-lead">
+              Você vai sair do site e abrir uma conversa com a Info Projekt.
+            </p>
+            <p className="wa-modal-preview">
+              {waIntent.plan
+                ? planRequestMessage(
+                    waIntent.city,
+                    waIntent.plan,
+                    waIntent.forBusiness,
+                  )
+                : `Quero fibra da Info em ${waIntent.city}.`}
+            </p>
+            <div className="wa-modal-actions">
+              <button
+                type="button"
+                className="ask ask-quiet"
+                onClick={closeWaConfirm}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className="ask"
+                ref={waConfirmRef}
+                onClick={confirmWhatsApp}
+              >
+                {waIntent.label}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </>
   );
 }

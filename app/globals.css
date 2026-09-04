@@ -322,6 +322,10 @@ img {
     box-shadow 180ms var(--ease-out);
 }
 
+button.ask {
+  font-family: inherit;
+}
+
 .ask:hover {
   background: color-mix(in srgb, var(--red) 88%, #000);
   transform: translateY(-2px);
@@ -698,6 +702,10 @@ img {
   color: var(--ink);
   font-weight: 800;
   font-size: 14px;
+  font-family: inherit;
+  text-align: start;
+  width: 100%;
+  cursor: pointer;
   box-shadow: var(--shadow-card);
   animation: rise-in 0.5s var(--ease-arrive) both;
   transition:
@@ -1351,7 +1359,6 @@ img {
 }
 
 .foot .cnpj,
-.foot a[href^="https://wa.me"],
 .foot a[href^="tel:"] {
   white-space: nowrap;
 }
@@ -1379,11 +1386,15 @@ img {
   height: 56px;
   display: grid;
   place-items: center;
+  border: 0;
   border-radius: 50%;
   background: var(--green);
   color: #fff;
   box-shadow: var(--shadow-float);
   text-decoration: none;
+  cursor: pointer;
+  font: inherit;
+  padding: 0;
   transition: transform 180ms var(--ease-out);
   animation: rise-in 0.55s var(--ease-arrive) 400ms both;
 }
@@ -1411,6 +1422,91 @@ img {
   height: 28px;
   position: relative;
   z-index: 1;
+}
+
+.linkish {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* WhatsApp confirm modal */
+.wa-modal {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--z-float) + 10);
+  display: grid;
+  place-items: center;
+  padding: var(--gutter);
+}
+
+.wa-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  background: rgb(0 0 0 / 0.55);
+  cursor: pointer;
+}
+
+.wa-modal-card {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 24rem);
+  display: grid;
+  gap: 14px;
+  padding: 22px 20px;
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-float);
+  animation: rise-in 0.35s var(--ease-arrive) both;
+}
+
+.wa-modal-card h2 {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: var(--fw-display);
+  letter-spacing: var(--tracking-tight);
+  line-height: 1.15;
+}
+
+.wa-modal-lead {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.wa-modal-preview {
+  margin: 0;
+  padding: 12px 14px;
+  background: var(--brand-soft);
+  color: var(--ink);
+  border-radius: var(--radius-inner);
+  font-weight: 700;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.wa-modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.wa-modal-actions .ask {
+  flex: 1 1 auto;
+  min-width: min(100%, 8rem);
 }
 
 /* Legal pages */
